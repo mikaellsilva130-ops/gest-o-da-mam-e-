@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>BellaMami Premium | Histórico Permanente Garantido</title>
+
+    <style>
+        :root {
+            --bg: #fdf8f8;
+            --card: #ffffff;
+            --primary: #db2777;
+            --primary-light: #fce7f3;
+            --text-dark: #111827;
+            --text-muted: #4b5563;
+            --border: #f3f4f6;
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-dark);
+            padding: 15px;
+            padding-bottom: 50px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .phone-wrapper {
+            width: 100%;
+            max-width: 440px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        /* CARD DO CONTADOR AUTOMÁTICO */
+        .counter-card {
+            background: linear-gradient(135deg, var(--primary), #be185d);
+            color: white;
+            padding: 22px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(219, 39, 119, 0.25);
+            text-align: center;
+        }
+
+        .counter-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.9; font-weight: 600; }
+        .counter-time { font-size: 2.2rem; font-weight: 900; margin: 8px 0; }
+        .counter-sub { font-size: 0.85rem; opacity: 0.85; }
+
+        .card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checklist-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .task-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9fafb;
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+        }
+
+        .task-info { flex: 1; padding-right: 10px; }
+        .task-name { font-size: 0.95rem; font-weight: 600; color: var(--text-dark); }
+        .task-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+        .task-actions { display: flex; gap: 8px; }
+
+        .btn-status {
+            font-size: 1.1rem;
+            border: 2px solid transparent;
+            background: white;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+
+        .btn-status.active-yes { background: #d1fae5; border-color: var(--success); }
+        .btn-status.active-no { background: #fee2e2; border-color: var(--danger); }
+
+        /* SINTOMAS */
+        .symptom-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .symptom-btn {
+            background: #f9fafb; border: 1px solid #e5e7eb; padding: 12px; border-radius: 10px;
+            text-align: center; cursor: pointer; font-size: 0.85rem; font-weight: 600;
+            transition: all 0.2s;
+        }
+        .symptom-btn.selected { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+
+        /* LINHA DO TEMPO HISTÓRICA PERMANENTE */
+        .history-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 320px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .history-day-card {
+            background: #f9fafb;
+            border-left: 4px solid var(--primary);
+            border-radius: 0 14px 14px 0;
+            padding: 14px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+        }
+        .history-date-header {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .history-task-line {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.85rem;
+            border-bottom: 1px dashed #e5e7eb;
+            padding-bottom: 3px;
+        }
+
+        .guide-box { display: flex; flex-direction: column; gap: 12px; }
+        .guide-item { padding: 12px; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; }
+        .guide-allowed { background: #ecfdf5; border-left: 4px solid var(--success); color: #065f46; }
+        .guide-forbidden { background: #fef2f2; border-left: 4px solid var(--danger); color: #991b1b; }
+    </style>
+</head>
+<body>
+
+    <div class="phone-wrapper">
+        <header>
+            <h1>🌸 BellaMami</h1>
+        </header>
+
+        <!-- CALENDÁRIO CONTADOR AUTOMÁTICO -->
+        <div class="counter-card">
+            <div class="counter-title">Tempo de Gestação Atual</div>
+            <div class="counter-time" id="pregnancy-counter">A carregar...</div>
+            <div class="counter-sub" id="pregnancy-sub">Falta pouco para o dia 3!</div>
+        </div>
+
+        <!-- CUIDADOS DO DIA (SALVAMENTO INSTANTÂNEO) -->
+        <div class="card">
+            <div class="card-title" id="current-day-title">📝 Cuidados de Hoje</div>
+            <div class="checklist-container" id="tasks-root"></div>
+        </div>
+
+        <!-- BEM ESTAR DO DIA (SALVAMENTO INSTANTÂNEO) -->
+        <div class="card">
+            <div class="card-title">☀️ Como se sente hoje?</div>
+            <div class="symptom-grid">
+                <div class="symptom-btn" id="symptom-bem" onclick="saveSymptomPermanently('Bem Disposta 😊')">Bem 😊</div>
+                <div class="symptom-btn" id="symptom-enjoos" onclick="saveSymptomPermanently('Com Enjoos 🤢')">Enjoos 🤢</div>
+                <div class="symptom-btn" id="symptom-cansaco" onclick="saveSymptomPermanently('Muito Cansada 😴')">Cansaço 😴</div>
+            </div>
+        </div>
+
+        <!-- HISTÓRICO INTEGRAL SEGURO -->
+        <div class="card">
+            <div class="card-title">📚 Histórico e Linha do Tempo Passada</div>
+            <div class="history-timeline" id="history-timeline-root">
+                <!-- Todos os dias anteriores ficam gravados aqui -->
+            </div>
+        </div>
+
+        <!-- DIÁRIO MÉDICO GESTACIONAL -->
+        <div class="card">
+            <div class="card-title">📘 Manual do Primeiro Trimestre</div>
+            <div class="guide-box">
+                <div class="guide-item guide-allowed">
+                    <strong>✅ O que DEVE fazer:</strong><br>
+                    • Beber pelo menos 2.5L de água por dia.<br>
+                    • Fazer refeições pequenas a cada 3 horas para evitar enjoos.<br>
+                    • Praticar caminhadas leves e alongamentos seguros.<br>
+                    • Priorizar 8 a 9 horas de sono por noite.
+                </div>
+                <div class="guide-item guide-forbidden">
+                    <strong>❌ O que NÃO deve fazer:</strong><br>
+                    • Evitar carnes malpassadas e vegetais mal lavados.<br>
+                    • Não tomar qualquer medicamento sem autorização médica.<br>
+                    • Evitar esforços pesados ou carregar muito peso.<br>
+                    • Cortar o consumo de bebidas alcoólicas e diminuir o café.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Banco de Dados Permanente à Prova de Saídas
+        let appState = JSON.parse(localStorage.getItem('bellamami_vault_v5')) || {
+            daysData: {} 
+        };
+
+        const dailyTasks = [
+            { id: "vitamin", name: "💊 Tomar Ácido Fólico", desc: "Fundamental para o sistema nervoso do bebé." },
+            { id: "water", name: "💧 Beber +2L de Água", desc: "Ajuda a renovar o líquido amniótico." },
+            { id: "eat", name: "🍏 Comer de 3h em 3h", desc: "Combate os enjoos matinais." },
+            { id: "rest", name: "😴 Descansar bem", desc: "O corpo gasta muita energia nesta fase." }
+        ];
+
+        function getTodayKey() {
+            return new Date().toLocaleDateString('pt-BR');
+        }
+
+        // CALENDÁRIO COM CONTADOR EM TEMPO REAL (BASEADO NO SEU MARCO DO DIA 3)
+        function runPregnancyCounter() {
+            const hoje = new Date();
+            // 2 meses completados no dia 03/07/2026 -> Início em 03/05/2026
+            const dataInicio = new Date(2026, 4, 3); 
+            
+            let totalDias = Math.floor((hoje - dataInicio) / (1000 * 60 * 60 * 24));
+            if (totalDias < 0) totalDias = 0;
+
+            let meses = Math.floor(totalDias / 30);
+            let diasRestantes = totalDias % 30;
+
+            document.getElementById('pregnancy-counter').innerText = `${meses} M, ${diasRestantes} D`;
+            
+            if (meses >= 2) {
+                document.getElementById('pregnancy-sub').innerText = "Você está no seu 2º mês de gestação!";
+            } else {
+                document.getElementById('pregnancy-sub').innerText = "Quase a celebrar os 2 meses (Dia 3)!";
+            }
+        }
+
+        // Inicializa o dia de hoje sem sobrescrever o que já existe
+        function verifyTodayMemory() {
+            const hojeKey = getTodayKey();
+            if (!appState.daysData[hojeKey]) {
+                appState.daysData[hojeKey] = {
+                    symptom: "Não preenchido",
+                    tasks: { vitamin: null, water: null, eat: null, rest: null }
+                };
+                saveToLocalStorage();
+            }
+        }
+
+        // RENDERIZAÇÃO DA LISTA DE TAREFAS DE HOJE
+        function renderTodayScreen() {
+            const hojeKey = getTodayKey();
+            document.getElementById('current-day-title').innerText = `📝 Cuidados de Hoje (${hojeKey})`;
+            
+            const todayData = appState.daysData[hojeKey];
+            const container = document.getElementById('tasks-root');
+            
+            container.innerHTML = dailyTasks.map(task => {
+                const status = todayData.tasks[task.id];
+                return `
+                    <div class="task-row">
+                        <div class="task-info">
+                            <div class="task-name">${task.name}</div>
+                            <div class="task-desc">${task.desc}</div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn-status ${status === 'yes' ? 'active-yes' : ''}" onclick="updateTaskState('${task.id}', 'yes')">✅</button>
+                            <button class="btn-status ${status === 'no' ? 'active-no' : ''}" onclick="updateTaskState('${task.id}', 'no')">❌</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateTaskState(taskId, status) {
+            const hojeKey = getTodayKey();
+            
+            // Se clicar no botão ativo, redefine para nulo, caso contrário salva o novo status
+            if (appState.daysData[hojeKey].tasks[taskId] === status) {
+                appState.daysData[hojeKey].tasks[taskId] = null;
+            } else {
+                appState.daysData[hojeKey].tasks[taskId] = status;
+            }
+            
+            saveToLocalStorage();
+            renderTodayScreen();
+            renderTimeline();
+        }
+
+        // SALVAMENTO PERMANENTE DO ESTADO DE ESPÍRITO
+        function saveSymptomPermanently(symptomText) {
+            const hojeKey = getTodayKey();
+            appState.daysData[hojeKey].symptom = symptomText;
+            
+            saveToLocalStorage();
+            applySymptomVisualSelection();
+            renderTimeline();
+        }
+
+        function applySymptomVisualSelection() {
+            const hojeKey = getTodayKey();
+            const symptom = appState.daysData[hojeKey].symptom;
+            
+            document.querySelectorAll('.symptom-btn').forEach(btn => btn.classList.remove('selected'));
+            
+            if (symptom.includes("Bem")) document.getElementById('symptom-bem').classList.add('selected');
+            if (symptom.includes("Enjoos")) document.getElementById('symptom-enjoos').classList.add('selected');
+            if (symptom.includes("Cansaço")) document.getElementById('symptom-cansaco').classList.add('selected');
+        }
+
+        // MONTAGEM DA LINHA DO TEMPO DIÁRIA ETERNA
+        function renderTimeline() {
+            const container = document.getElementById('history-timeline-root');
+            
+            // Organiza as datas cronologicamente (as mais recentes no topo)
+            const historicalDates = Object.keys(appState.daysData).sort((a, b) => {
+                return new Date(b.split('/').reverse().join('-')) - new Date(a.split('/').reverse().join('-'));
+            });
+
+            if (historicalDates.length === 0) {
+                container.innerHTML = `<p style="text-align:center; font-size:0.85rem; color:var(--text-muted); padding:10px;">O seu diário histórico começará aqui.</p>`;
+                return;
+            }
+
+            container.innerHTML = historicalDates.map(dateKey => {
+                const data = appState.daysData[dateKey];
+                return `
+                    <div class="history-day-card">
+                        <div class="history-date-header">
+                            <span>🗓️ Dia ${dateKey}</span>
+                            <span style="font-size:0.8rem; background:var(--primary-light); color:var(--primary); padding: 2px 8px; border-radius:8px;">${data.symptom}</span>
+                        </div>
+                        <div style="margin-top:8px;">
+                            ${dailyTasks.map(t => {
+                                const state = data.tasks[t.id];
+                                let indicator = "⏳"; // Esperando marcação
+                                if (state === 'yes') indicator = "✅";
+                                if (state === 'no') indicator = "❌";
+                                return `
+                                    <div class="history-task-line">
+                                        <span style="color:var(--text-muted);">${t.name}</span>
+                                        <span>${indicator}</span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // FUNÇÃO DE GRAVAÇÃO TOTAL IMEDIATA
+        function saveToLocalStorage() {
+            localStorage.setItem('bellamami_vault_v5', JSON.stringify(appState));
+        }
+
+        // EXECUÇÃO INICIAL DO SISTEMA
+        runPregnancyCounter();
+        verifyTodayMemory();
+        renderTodayScreen();
+        applySymptomVisualSelection();
+        renderTimeline();
+    </script>
+</body>
+</html>
